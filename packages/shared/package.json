@@ -1,0 +1,25 @@
+{
+    "name": "@ux-agent/shared",
+    "version": "1.0.0",
+    "description": "Shared schemas and types for UX Agent",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch"
+    },
+    "dependencies": {
+        "zod": "^3.25.71"
+    },
+    "devDependencies": {
+        "typescript": "^5.8.3",
+        "@types/node": "^20.0.0"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "name": "ux-agent-monorepo",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "test": "turbo test",
+        "agent:dev": "turbo dev --filter=agent",
+        "ui:dev": "turbo dev --filter=agent-ui",
+        "shared:build": "turbo build --filter=@ux-agent/shared"
+    },
+    "devDependencies": {
+        "turbo": "^2.0.0"
+    },
+    "packageManager": "npm@11.3.0",
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ]
+}

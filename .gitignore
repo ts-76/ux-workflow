@@ -1,0 +1,10 @@
+
+node_modules
+.next
+.turbo
+.mastra
+dist
+.DS_Store
+.vscode
+
+.env
