@@ -326,23 +326,10 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
     // ローディング中の表示を改善 - より具体的な状態表示
     if (isLoading || (workflowState === null && !isWatching)) {
         return (
-            <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 my-4 border border-gray-200 dark:border-gray-700">
-                <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100 border-b pb-3 border-gray-200 dark:border-gray-700">
-                    ワークフロー実行状況
-                </h3>
-
-                <div className="flex items-center justify-center p-6">
-                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mr-3"></div>
-                    <div>
-                        <p className="font-medium">ワークフロー情報を取得中...</p>
-                        <p className="text-sm text-gray-500 mt-1">実行ID: <span className="font-mono">{runId}</span></p>
-                    </div>
-                </div>
-
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-4 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
-                    <p>🔄 ポーリング監視でステータスを確認しています</p>
-                    <p className="text-xs mt-1">初回の状態取得には数秒かかることがあります</p>
-                </div>
+            <div className="my-4 rounded-lg border border-neutral-200 bg-white p-5 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+                <p className="font-medium">ワークフロー情報を取得中です。</p>
+                <p className="mt-2 font-mono text-xs">実行ID: {runId}</p>
+                <p className="mt-3 text-xs leading-relaxed text-neutral-500 dark:text-neutral-400">初回の状態取得には数秒かかることがあります。</p>
             </div>
         );
     }
@@ -350,131 +337,72 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
     // エラーの表示
     if (error) {
         return (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
-                <p className="font-bold">エラー</p>
-                <p>{error}</p>
-                <div className="mt-3 bg-white p-3 rounded border border-red-200">
-                    <p className="text-sm font-medium">ワークフローID: {runId}</p>
-                    <p className="text-xs mt-1">サーバーに接続できない可能性があります。</p>
-                </div>
+            <div className="my-4 rounded-lg border border-red-400 bg-red-50 p-4 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                <p className="font-medium">エラーが発生しました。</p>
+                <p className="mt-2 break-words text-xs">{error}</p>
+                <p className="mt-2 text-xs">ワークフローID: {runId}</p>
             </div>
         );
     }
 
     // 通常の表示
     return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 my-4 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100 border-b pb-3 border-gray-200 dark:border-gray-700 flex items-center">
-                <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                ワークフロー実行状況
-            </h3>
+        <div className="my-4 rounded-lg border border-neutral-200 bg-white p-6 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+            <h3 className="text-base font-semibold text-neutral-800 dark:text-neutral-100">ワークフロー実行状況</h3>
 
-            <div className="mb-6">
-                <div className="flex items-center justify-between mb-3 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+            <div className="mt-4">
+                <div className="flex flex-col gap-3 rounded-md border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
                     <div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                            実行ID: <span className="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-blue-600 dark:text-blue-400">{runId}</span>
-                        </p>
-                        <div className="mt-2 flex items-center">
-                            <p className="font-medium text-gray-700 dark:text-gray-300">ステータス:</p>
-                            <span className={`ml-2 px-2 py-0.5 rounded-full text-sm font-medium ${workflowState?.allStepsSuccess
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                                }`}>
-                                {getStatusLabel(workflowState?.allStepsSuccess || false)}
-                            </span>
-                        </div>
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400">実行ID</p>
+                        <p className="font-mono text-sm text-neutral-700 dark:text-neutral-200">{runId}</p>
                     </div>
-
-                    {workflowState?.allStepsSuccess && (
-                        <div className="hidden sm:block">
-                            <svg className="w-12 h-12 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                    )}
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-neutral-700 dark:text-neutral-200">ステータス</p>
+                        <span className="rounded px-2 py-1 text-xs font-medium text-neutral-600 dark:text-neutral-300">
+                            {getStatusLabel(workflowState?.allStepsSuccess || false)}
+                        </span>
+                    </div>
                 </div>
 
                 {!isWatching && workflowState === null && (
-                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                        <div className="flex items-start">
-                            <svg className="w-5 h-5 mr-3 text-yellow-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                            <div>
-                                <p className="font-medium text-yellow-800 dark:text-yellow-300">Mastraサーバーからの応答がありません</p>
-                                <p className="text-sm text-yellow-700 dark:text-yellow-400 mt-1">サーバーが起動していることを確認してください。ポーリング監視でステータスを確認します。</p>
-                            </div>
-                        </div>
+                    <div className="mt-3 rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-xs text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+                        Mastraサーバーからの応答がありません。サーバーの起動状態を確認してください。
                     </div>
                 )}
 
-                {workflowState && (workflowState.status === 'success' || workflowState.status === 'failed') && (
-                    <div className={`mt-4 p-4 rounded-lg ${workflowState.status === 'success' ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900'}`}>
-                        <div className="flex items-center">
-                            {workflowState.status === 'success' ? (
-                                <svg className="w-6 h-6 mr-3 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            ) : (
-                                <svg className="w-6 h-6 mr-3 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            )}
-                            <p className={`font-medium ${workflowState.status === 'success' ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
-                                {workflowState.status === 'success' ? 'ワークフローが正常に完了しました' : 'ワークフローでエラーが発生しました'}
-                            </p>
-                        </div>
-                        {workflowState.status === 'success' && (
-                            <p className="text-sm text-green-700 dark:text-green-400 mt-2 ml-9">評価結果が生成され、保存されました。</p>
-                        )}
-                    </div>
-                )}
-
-                {/* すべてのステップが完了している場合の表示 */}
                 {(workflowState as any)?.allStepsSuccess && !workflowState?.status && (
-                    <div className="mt-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900">
-                        <div className="flex items-center">
-                            <svg className="w-6 h-6 mr-3 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <p className="font-medium text-green-800 dark:text-green-300">
-                                すべてのステップが正常に完了しました
-                            </p>
-                        </div>
+                    <div className="mt-3 rounded border border-green-400 bg-green-50 px-4 py-3 text-xs text-green-800 dark:border-green-700 dark:bg-green-900/30 dark:text-green-200">
+                        すべてのステップが正常に完了しました。
                     </div>
                 )}
+            </div>
+
+            {workflowState && (workflowState.status === 'success' || workflowState.status === 'failed') && (
+                <div className="mt-4 rounded border border-neutral-200 bg-white p-4 text-xs leading-relaxed text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+                    <p className="font-medium">{workflowState.status === 'success' ? 'ワークフローが正常に完了しました' : 'ワークフローでエラーが発生しました'}</p>
+                    {workflowState.status === 'success' && (
+                        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">評価結果が生成され、保存されました。</p>
+                    )}
+                </div>
+            )}
+
             </div>
             {/* ステップリストは実行詳細セクションに統合されたため削除 */}
 
             {/* エラーの表示 */}
             {workflowState?.status === 'failed' && workflowState?.error && (
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                    <h4 className="font-medium mb-3 text-red-800 dark:text-red-300 flex items-center">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        エラー詳細
-                    </h4>
-                    <div className="bg-white dark:bg-gray-800 p-3 rounded shadow-inner border border-red-100 dark:border-red-900">
-                        <p className="text-sm text-red-700 dark:text-red-300">{workflowState.error}</p>
-                    </div>
+                <div className="mb-6 rounded border border-red-400 bg-red-50 p-4 text-xs text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
+                    <p className="font-medium">エラー詳細</p>
+                    <p className="mt-2 leading-relaxed">{workflowState.error}</p>
                 </div>
             )}
 
             <div className="mt-6">
-                <h4 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200 flex items-center">
-                    <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    ワークフロー実行状況
-                </h4>
+                <h4 className="mb-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">ステップの進行状況</h4>
 
                 <div className="relative">
                     {/* 垂直のプログレスライン */}
-                    <div className="absolute left-[18px] top-6 bottom-6 w-[2px] bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="absolute left-[18px] top-6 bottom-6 w-px bg-neutral-300 dark:bg-neutral-700"></div>
 
                     <div className="space-y-4">
                         {(() => {
@@ -493,33 +421,16 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
                                     return (
                                         <div key={step.stepId} className="relative">
                                             <div className={`
-                                                ml-12 p-4 rounded-lg shadow-sm transition-all duration-200
+                                                ml-12 rounded-md border border-neutral-200 bg-white p-4 text-sm
                                                 ${stepStatus === 'success'
-                                                    ? 'bg-green-50 border-l-4 border-l-green-500 dark:bg-green-900/20 dark:border-l-green-600'
+                                                    ? 'border-l-2 border-l-green-500 dark:border-l-green-400'
                                                     : stepStatus === 'in_progress'
-                                                        ? 'bg-blue-50 border-l-4 border-l-blue-500 dark:bg-blue-900/20 dark:border-l-blue-600'
-                                                        : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+                                                        ? 'border-l-2 border-l-neutral-500 dark:border-l-neutral-400'
+                                                        : 'border-l border-l-neutral-300 dark:border-l-neutral-700'
                                                 }
                                             `}>
-                                                {/* アイコン (絶対配置で垂直線の上に表示) */}
-                                                <div className={`
-                                                    absolute left-0 top-4 w-9 h-9 rounded-full flex items-center justify-center border-2
-                                                    ${stepStatus === 'success'
-                                                        ? 'bg-green-100 border-green-500 text-green-600 dark:bg-green-900/30 dark:border-green-600'
-                                                        : stepStatus === 'in_progress'
-                                                            ? 'bg-blue-100 border-blue-500 text-blue-600 dark:bg-blue-900/30 dark:border-blue-600'
-                                                            : 'bg-white border-gray-300 text-gray-400 dark:bg-gray-800 dark:border-gray-600'
-                                                    }
-                                                `}>
-                                                    {stepStatus === 'success' ? (
-                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    ) : stepStatus === 'in_progress' ? (
-                                                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                                    ) : (
-                                                        <div className="w-3 h-3 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                                    )}
+                                                <div className="absolute left-0 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 bg-white text-xs text-neutral-500 dark:border-neutral-600 dark:bg-neutral-800">
+                                                    {index + 1}
                                                 </div>
 
                                                 {/* コンテンツ */}

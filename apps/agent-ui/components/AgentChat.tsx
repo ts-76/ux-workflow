@@ -51,166 +51,62 @@ export default function AgentChat() {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 my-8">
-            <div className="bg-blue-600 dark:bg-blue-700 text-white p-4">
-                <h2 className="text-xl font-semibold flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                    </svg>
-                    UX評価エージェント
-                </h2>
+        <div className="my-8 rounded-lg border border-neutral-200 bg-white text-neutral-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+            <div className="border-b border-neutral-200 px-4 py-3 text-sm font-semibold text-neutral-700 dark:border-neutral-700 dark:text-neutral-200">
+                UX評価エージェント
             </div>
 
-            <div className="p-4">
-                <div className="space-y-4 h-[450px] overflow-y-auto mb-4 p-2 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div className="px-4 py-4">
+                <div className="mb-4 flex h-[420px] flex-col gap-3 overflow-y-auto rounded-md border border-neutral-200 bg-neutral-50 p-3 text-sm dark:border-neutral-700 dark:bg-neutral-800">
                     {messages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-gray-500 dark:text-gray-400 p-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                            </svg>
-                            <p className="text-center">
-                                UX評価エージェントにメッセージを送信してください。<br />
-                                <span className="text-sm">質問例: 「このサイトのナビゲーションについて教えてください」</span>
-                            </p>
+                        <div className="flex h-full flex-col items-center justify-center gap-2 text-center text-neutral-500 dark:text-neutral-300">
+                            <p className="text-sm">UX評価エージェントにメッセージを送信してください。</p>
+                            <p className="text-xs">質問例: 「このサイトのナビゲーションについて教えてください」</p>
                         </div>
                     ) : (
                         messages.map((message, index) => (
                             <div
                                 key={index}
-                                className={`p-4 rounded-lg transition-all duration-200 animate-fadeIn ${message.role === 'user'
-                                        ? 'bg-blue-50 dark:bg-blue-900/30 ml-8 border border-blue-100 dark:border-blue-800'
-                                        : 'bg-gray-100 dark:bg-gray-800 mr-8 border border-gray-200 dark:border-gray-700'
+                                className={`w-fit max-w-[85%] rounded-md px-3 py-2 transition-opacity ${message.role === 'user'
+                                        ? 'self-end bg-white text-neutral-700 dark:bg-neutral-900 dark:text-neutral-100'
+                                        : 'self-start bg-neutral-200 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-100'
                                     }`}
                             >
-                                <div className="flex items-center font-semibold mb-2 text-sm">
-                                    {message.role === 'user' ? (
-                                        <>
-                                            <div className="bg-blue-100 dark:bg-blue-800 p-1 rounded-full mr-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-500 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700 dark:text-gray-300">あなた</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="bg-gray-200 dark:bg-gray-700 p-1 rounded-full mr-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-700 dark:text-gray-300">UX評価エージェント</span>
-                                        </>
-                                    )}
-                                </div>
-                                <p className="whitespace-pre-wrap text-gray-800 dark:text-gray-200 pl-7">{message.content}</p>
+                                <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
                             </div>
                         ))
                     )}
 
                     {isLoading && (
-                        <div className="flex justify-center items-center p-6 animate-pulse">
-                            <div className="dot-typing"></div>
-                            <span className="ml-3 text-blue-600 dark:text-blue-400">応答を生成中...</span>
+                        <div className="flex items-center justify-center px-3 py-2 text-xs text-neutral-500 dark:text-neutral-300">
+                            応答を生成中...
                         </div>
                     )}
 
                     <div ref={messagesEndRef} />
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex gap-2 mt-4">
+                <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="メッセージを入力..."
-                        className="flex-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+                        className="flex-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                         disabled={isLoading}
                     />
                     <button
                         type="submit"
                         disabled={isLoading || !input.trim()}
-                        className={`px-5 py-3 rounded-lg text-white font-medium transition-colors duration-200 flex items-center ${isLoading || !input.trim()
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${isLoading || !input.trim()
+                                ? 'cursor-not-allowed bg-neutral-300 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400'
+                                : 'bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-white'
                             }`}
                     >
-                        {isLoading ? (
-                            <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        ) : (
-                            <>
-                                <span>送信</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                                </svg>
-                            </>
-                        )}
+                        送信
                     </button>
                 </form>
             </div>
-
-            <style jsx>{`
-        .dot-typing {
-          position: relative;
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background-color: #3b82f6;
-          color: #3b82f6;
-          animation: dot-typing 1s infinite linear;
-        }
-        
-        .dot-typing::before, .dot-typing::after {
-          content: '';
-          display: inline-block;
-          position: absolute;
-          top: 0;
-        }
-        
-        .dot-typing::before {
-          left: -8px;
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background-color: #3b82f6;
-          color: #3b82f6;
-          animation: dot-typing 1s infinite linear 0.25s;
-        }
-        
-        .dot-typing::after {
-          left: 8px;
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background-color: #3b82f6;
-          color: #3b82f6;
-          animation: dot-typing 1s infinite linear 0.5s;
-        }
-        
-        @keyframes dot-typing {
-          0% {
-            box-shadow: none;
-          }
-          50% {
-            box-shadow: 0 0 0 1px #3b82f6;
-          }
-          100% {
-            box-shadow: none;
-          }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-in-out;
-        }
-      `}</style>
         </div>
     );
-} 
+}

@@ -167,16 +167,16 @@ export default function UxEvaluationForm() {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 my-8 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 border-b pb-3 border-gray-200 dark:border-gray-700">UX評価ワークフロー</h2>
+        <div className="mt-8 rounded-lg border border-neutral-200 bg-white p-6 text-neutral-800 shadow-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100">
+            <h2 className="text-lg font-semibold">UX評価ワークフロー</h2>
 
             {serverStatus === 'offline' && (
-                <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded-md">
-                    <p className="font-bold">サーバー接続エラー</p>
-                    <p className="text-sm mt-1">
+                <div className="mt-4 rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+                    <p className="font-medium">サーバー接続エラー</p>
+                    <p className="mt-1 text-xs leading-relaxed">
                         Mastraサーバーに接続できません。サーバーが起動していることを確認してください。
                         <br />
-                        <code className="bg-yellow-100 px-1 rounded">cd /path/to/agent && npm run dev</code> でサーバーを起動する必要があります。
+                        <code className="rounded bg-yellow-100 px-1 py-0.5 text-[11px] dark:bg-yellow-800/30">cd /path/to/agent && npm run dev</code> でサーバーを起動する必要があります。
                     </p>
                 </div>
             )}
@@ -184,7 +184,7 @@ export default function UxEvaluationForm() {
             {!result && (
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label htmlFor="targetUrl" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        <label htmlFor="targetUrl" className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-200">
                             評価対象URL <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -192,13 +192,13 @@ export default function UxEvaluationForm() {
                             id="targetUrl"
                             name="targetUrl"
                             placeholder="https://example.com"
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+                            className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 outline-none transition-colors focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                             required
                         />
                     </div>
 
                     <div>
-                        <label htmlFor="personaCount" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        <label htmlFor="personaCount" className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-200">
                             ペルソナ数
                         </label>
                         <input
@@ -208,12 +208,12 @@ export default function UxEvaluationForm() {
                             defaultValue={2}
                             min={1}
                             max={5}
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+                            className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                         />
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">評価に使用するペルソナの数（1〜5）</p>
+                        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">評価に使用するペルソナの数（1〜5）</p>
                     </div>
                     <div>
-                        <label htmlFor="projectRoot" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        <label htmlFor="projectRoot" className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-200">
                             評価結果の保存先ディレクトリ
                         </label>
                         <input
@@ -221,9 +221,9 @@ export default function UxEvaluationForm() {
                             id="projectRoot"
                             name="projectRoot"
                             placeholder="/tmp/ux-results または空白でデフォルト場所"
-                            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+                            className="w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-800 outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
                         />
-                        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                             評価結果を保存するディレクトリパス（空白の場合は /tmp/ux-results がデフォルト）
                         </p>
                     </div>
@@ -231,50 +231,33 @@ export default function UxEvaluationForm() {
                     <button
                         type="submit"
                         disabled={isLoading || serverStatus === 'offline'}
-                        className={`w-full p-3 rounded-lg text-white font-medium transition-colors duration-200 ${isLoading || serverStatus === 'offline'
-                            ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                        className={`w-full rounded-md px-3 py-2 text-sm font-medium transition-colors ${isLoading || serverStatus === 'offline'
+                            ? 'cursor-not-allowed bg-neutral-300 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400'
+                            : 'bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-200 dark:text-neutral-900 dark:hover:bg-white'
                             }`}
                     >
-                        {isLoading ? (
-                            <div className="flex items-center justify-center">
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                評価実行中...
-                            </div>
-                        ) : serverStatus === 'offline' ? 'サーバーがオフラインです' : 'UX評価を開始'}
+                        {isLoading ? '評価実行中...' : serverStatus === 'offline' ? 'サーバーがオフラインです' : 'UX評価を開始'}
                     </button>
                 </form>
             )}
 
             {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mt-6 rounded-md" role="alert">
-                    <div className="flex">
-                        <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                        <div className="ml-3">
-                            <p className="text-sm">{error}</p>
-                        </div>
-                    </div>
+                <div className="mt-6 rounded border border-red-400 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200" role="alert">
+                    <p>{error}</p>
                 </div>
             )}
 
             {result && (
-                <div className="mt-6 animate-fadeIn">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">評価状況</h3>
-                    <div className="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div className="mt-6">
+                    <h3 className="text-base font-semibold text-neutral-800 dark:text-neutral-100">評価状況</h3>
+                    <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
                         <div className="mb-4">
-                            <p className="font-medium text-gray-700 dark:text-gray-300">リクエストID:</p>
-                            <p className="font-mono text-sm mt-2 p-3 bg-gray-100 dark:bg-gray-800 rounded break-all">{result.requestId}</p>
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                対象URL: <a href={result.targetUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{result.targetUrl}</a>
+                            <p className="font-medium">リクエストID</p>
+                            <p className="mt-1 break-all font-mono text-xs text-neutral-600 dark:text-neutral-300">{result.requestId}</p>
+                            <p className="mt-2 text-xs">
+                                対象URL: <a href={result.targetUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{result.targetUrl}</a>
                             </p>
-                            <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mt-4 text-xs leading-relaxed">
                                 評価が非同期で実行されています。ワークフロー状況はリアルタイムで更新されます。
                             </p>
                         </div>
@@ -289,11 +272,8 @@ export default function UxEvaluationForm() {
                                     setLastCompletedRunId(null);
                                     setError(null);
                                 }}
-                                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium flex items-center"
+                                className="text-sm font-medium text-neutral-700 underline underline-offset-4 hover:text-neutral-900 dark:text-neutral-200 dark:hover:text-white"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
                                 新しい評価を開始
                             </button>
                         </div>
