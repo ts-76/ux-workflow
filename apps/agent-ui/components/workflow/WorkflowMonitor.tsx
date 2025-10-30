@@ -12,7 +12,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { watchWorkflowRun } from '@/lib/workflow-service';
-import { useWorkflowState } from './WorkflowStateProvider';
+import { useWorkflowState } from '@/components/WorkflowStateProvider';
 import {
     WorkflowState,
     StepStatus,
@@ -23,7 +23,7 @@ import {
     StepProgressSection,
     shouldExcludeStep,
     getStatusLabel,
-} from './workflow';
+} from '@/components/workflow';
 
 interface WorkflowMonitorProps {
     runId: string;

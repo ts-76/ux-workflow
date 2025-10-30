@@ -6,5 +6,4 @@ const bedrock = createAmazonBedrock({
     credentialProvider: fromNodeProviderChain()
 })
 
-
 export { bedrock }
