@@ -1,6 +1,6 @@
-import { Agent } from '@mastra/core';
-import { bedrock } from '../models';
+import { Agent } from '@mastra/core/agent';
 import { mcp } from '../mcp/client';
+import { gemini } from '../models';
 
 // 事前にツールを取得
 const tools = await mcp.getTools();
@@ -8,7 +8,7 @@ const tools = await mcp.getTools();
 export const crawlAgent = new Agent({
    name: 'crawlAgent',
    description: 'サイト分析とページ構造を把握するエージェント',
-   model: bedrock('us.anthropic.claude-3-7-sonnet-20250219-v1:0'),
+   model: gemini("gemini-2.5-pro"),
    tools,
    instructions: `
 あなたはWebサイト分析とページ構造把握のスペシャリストです。
@@ -112,7 +112,7 @@ export const generate = async (prompt: string, options: any = {}) => {
       onStepFinish: ({ text, toolCalls, toolResults }) => {
          // 中間ステップの情報をログに記録
          if (toolCalls && toolCalls.length > 0) {
-            console.log(`中間ステップ: ${toolCalls.map(call => call.toolName).join(', ')}を実行`);
+            console.log(`中間ステップ: ${toolCalls.map(call => call.payload.toolName).join(', ')}を実行`);
          }
       },
       ...options // 追加のオプションを展開
