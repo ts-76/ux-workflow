@@ -1,5 +1,5 @@
-import UxEvaluationForm from '@/components/UxEvaluationForm';
-import AgentChat from '@/components/AgentChat';
+import UxEvaluationForm from '@/components/evaluation/UxEvaluationForm';
+import AgentChat from '@/components/chat/AgentChat';
 import Link from 'next/link';
 
 export default function Home() {

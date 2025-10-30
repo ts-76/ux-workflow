@@ -13,50 +13,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { watchWorkflowRun } from '@/lib/workflow-service';
 import { useWorkflowState } from './WorkflowStateProvider';
+import {
+    WorkflowState,
+    StepStatus,
+    WorkflowWatchEvent,
+    WorkflowSummary,
+    WorkflowCompletionNotice,
+    WorkflowErrorDetails,
+    StepProgressSection,
+    shouldExcludeStep,
+    getStatusLabel,
+} from './workflow';
 
 interface WorkflowMonitorProps {
     runId: string;
     targetUrl?: string;
-}
-
-interface StepStatus {
-    id: string;
-    status: string;
-    output?: Record<string, any>;
-    payload?: Record<string, any>;
-}
-
-interface StepStatusInfo {
-    stepId: string;
-    status: string;
-    payload?: Record<string, any> | null;
-}
-
-interface WorkflowState {
-    status: string;
-    steps: Record<string, {
-        status: string;
-        output?: Record<string, any>;
-        payload?: Record<string, any>;
-    }>;
-    result?: Record<string, any>;
-    error?: string;
-    allStepsSuccess?: boolean;
-    stepsStatus?: StepStatusInfo[];
-}
-
-interface WorkflowWatchEvent {
-    payload: {
-        currentStep?: {
-            id: string;
-            status: string;
-            output?: Record<string, any>;
-            payload?: Record<string, any>;
-        };
-        workflowState: WorkflowState;
-    };
-    eventTimestamp: Date;
-    runId: string;
 }
 
 export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorProps) {
@@ -78,11 +49,6 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
 
     // グローバルワークフロー状態
     const { monitorWorkflow, stopMonitoring } = useWorkflowState();
-
-    // inputステップを除外する関数
-    const shouldExcludeStep = (stepId: string): boolean => {
-        return stepId === 'input' || stepId.toLowerCase().includes('input');
-    };
 
     useEffect(() => {
         if (!runId) return;
@@ -284,15 +250,6 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
         };
     }, [runId, monitorWorkflow, targetUrl]);
 
-    // ステータスに応じた日本語表示を返す関数
-    const getStatusLabel = (allStepsSuccess: boolean): string => {
-        switch (allStepsSuccess) {
-            case true: return '完了';
-            case false: return '実行中';
-            default: return '不明';
-        }
-    };
-
     // ローディング中の表示を改善 - より具体的な状態表示
     if (isLoading || (workflowState === null && !isWatching)) {
         return (
@@ -335,244 +292,4 @@ export default function WorkflowMonitor({ runId, targetUrl }: WorkflowMonitorPro
             <StepProgressSection stepsStatus={workflowState?.stepsStatus} />
         </div>
     );
-}
-
-interface WorkflowSummaryProps {
-    runId: string;
-    statusLabel: string;
-    workflowState: WorkflowState | null;
-    isWatching: boolean;
-}
-
-function WorkflowSummary({ runId, statusLabel, workflowState, isWatching }: WorkflowSummaryProps) {
-    return (
-        <div className="mt-4">
-            <div className="flex flex-col gap-3 rounded-md border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800">
-                <div>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">実行ID</p>
-                    <p className="font-mono text-sm text-neutral-700 dark:text-neutral-200">{runId}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-neutral-700 dark:text-neutral-200">ステータス</p>
-                    <span className="rounded px-2 py-1 text-xs font-medium text-neutral-600 dark:text-neutral-300">
-                        {statusLabel}
-                    </span>
-                </div>
-            </div>
-
-            {!isWatching && workflowState === null && (
-                <div className="mt-3 rounded border border-yellow-400 bg-yellow-50 px-4 py-3 text-xs text-yellow-800 dark:border-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
-                    Mastraサーバーからの応答がありません。サーバーの起動状態を確認してください。
-                </div>
-            )}
-
-            {(workflowState as any)?.allStepsSuccess && !workflowState?.status && (
-                <div className="mt-3 rounded border border-green-400 bg-green-50 px-4 py-3 text-xs text-green-800 dark:border-green-700 dark:bg-green-900/30 dark:text-green-200">
-                    すべてのステップが正常に完了しました。
-                </div>
-            )}
-        </div>
-    );
-}
-
-interface WorkflowNoticeProps {
-    workflowState: WorkflowState | null;
-}
-
-function WorkflowCompletionNotice({ workflowState }: WorkflowNoticeProps) {
-    if (!workflowState || (workflowState.status !== 'success' && workflowState.status !== 'failed')) {
-        return null;
-    }
-
-    return (
-        <div className="mt-4 rounded border border-neutral-200 bg-white p-4 text-xs leading-relaxed text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
-            <p className="font-medium">{workflowState.status === 'success' ? 'ワークフローが正常に完了しました' : 'ワークフローでエラーが発生しました'}</p>
-            {workflowState.status === 'success' && (
-                <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">評価結果が生成され、保存されました。</p>
-            )}
-        </div>
-    );
-}
-
-function WorkflowErrorDetails({ workflowState }: WorkflowNoticeProps) {
-    if (!(workflowState?.status === 'failed' && workflowState?.error)) {
-        return null;
-    }
-
-    return (
-        <div className="mb-6 mt-4 rounded border border-red-400 bg-red-50 p-4 text-xs text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-200">
-            <p className="font-medium">エラー詳細</p>
-            <p className="mt-2 leading-relaxed">{workflowState.error}</p>
-        </div>
-    );
-}
-
-interface StepProgressSectionProps {
-    stepsStatus?: StepStatusInfo[];
-}
-
-function StepProgressSection({ stepsStatus }: StepProgressSectionProps) {
-    return (
-        <div className="mt-6">
-            <h4 className="mb-3 text-sm font-semibold text-neutral-700 dark:text-neutral-200">ステップの進行状況</h4>
-
-            <div className="relative">
-                <div className="absolute left-[18px] top-6 bottom-6 w-px bg-neutral-300 dark:bg-neutral-700" />
-
-                <div className="space-y-4">
-                    {stepsStatus ? renderStepItems(stepsStatus) : <EmptyStepNotice />}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function renderStepItems(stepsStatus: StepStatusInfo[]) {
-    const successSteps = stepsStatus.filter((s) => s.status === 'success');
-    const currentStepIndex = successSteps.length < stepsStatus.length ? successSteps.length : -1;
-
-    return stepsStatus.map((step, index) => {
-        let stepStatus = step.status || 'unchecked';
-        if (index === currentStepIndex) {
-            stepStatus = 'in_progress';
-        }
-
-        return (
-            <StepProgressItem
-                key={step.stepId}
-                step={step}
-                index={index}
-                stepStatus={stepStatus}
-            />
-        );
-    });
-}
-
-interface StepProgressItemProps {
-    step: StepStatusInfo;
-    index: number;
-    stepStatus: string;
-}
-
-function StepProgressItem({ step, index, stepStatus }: StepProgressItemProps) {
-    const payloadId = `step-output-${step.stepId}`;
-
-    return (
-        <div className="relative">
-            <div
-                className={`ml-12 rounded-md border border-neutral-200 bg-white p-4 text-sm
-                    ${stepStatus === 'success'
-                        ? 'border-l-2 border-l-green-500 dark:border-l-green-400'
-                        : stepStatus === 'in_progress'
-                            ? 'border-l-2 border-l-neutral-500 dark:border-l-neutral-400'
-                            : 'border-l border-l-neutral-300 dark:border-l-neutral-700'
-                    }
-                `}
-            >
-                <div className="absolute left-0 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-neutral-300 bg-white text-xs text-neutral-500 dark:border-neutral-600 dark:bg-neutral-800">
-                    {index + 1}
-                </div>
-
-                <StepProgressHeader step={step} stepStatus={stepStatus} payloadId={payloadId} />
-
-                {step.payload && (
-                    <StepPayloadDetails payloadId={payloadId} payload={step.payload} />
-                )}
-            </div>
-        </div>
-    );
-}
-
-interface StepProgressHeaderProps {
-    step: StepStatusInfo;
-    stepStatus: string;
-    payloadId: string;
-}
-
-function StepProgressHeader({ step, stepStatus, payloadId }: StepProgressHeaderProps) {
-    return (
-        <div className="flex items-center justify-between">
-            <div>
-                <h5
-                    className={`font-medium text-base
-                        ${stepStatus === 'unchecked'
-                            ? 'text-gray-500 dark:text-gray-400'
-                            : stepStatus === 'in_progress'
-                                ? 'text-blue-700 dark:text-blue-400'
-                                : 'text-green-700 dark:text-green-400'
-                        }`}
-                >
-                    {step.stepId}
-                </h5>
-                <span
-                    className={`inline-block mt-1 rounded-full px-2 py-0.5 text-xs font-medium
-                        ${stepStatus === 'success'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : stepStatus === 'in_progress'
-                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 animate-pulse'
-                                : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
-                        }`}
-                >
-                    {stepStatus === 'success' ? '完了' : stepStatus === 'in_progress' ? '実行中' : '未実行'}
-                </span>
-            </div>
-
-            {step.payload && (
-                <button
-                    onClick={() => togglePayloadVisibility(payloadId)}
-                    className={`rounded-md px-3 py-1.5 text-xs font-medium transition-all
-                        ${stepStatus === 'success'
-                            ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
-                            : stepStatus === 'in_progress'
-                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600'
-                        }
-                    `}
-                >
-                    詳細表示
-                </button>
-            )}
-        </div>
-    );
-}
-
-function StepPayloadDetails({ payloadId, payload }: { payloadId: string; payload: object }) {
-    return (
-        <div
-            id={payloadId}
-            style={{ display: 'none' }}
-            className="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700"
-        >
-            <div className="overflow-hidden rounded-md bg-gray-50 p-3 dark:bg-gray-900/50">
-                <p className="mb-2 flex items-center text-xs font-medium text-gray-500 dark:text-gray-400">
-                    <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    ステップ実行データ
-                </p>
-                <pre className="whitespace-pre-wrap rounded border border-gray-200 bg-white p-2 text-xs shadow-inner dark:border-gray-700 dark:bg-gray-800">
-                    {JSON.stringify(payload, null, 2)}
-                </pre>
-            </div>
-        </div>
-    );
-}
-
-function EmptyStepNotice() {
-    return (
-        <div className="ml-12 rounded-lg border border-dashed border-gray-300 p-6 text-center dark:border-gray-600">
-            <svg className="mx-auto mb-3 h-10 w-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="font-medium text-gray-600 dark:text-gray-300">まだステップ情報はありません</p>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">ワークフローが開始されると、ここに進行状況が表示されます</p>
-        </div>
-    );
-}
-
-function togglePayloadVisibility(elementId: string) {
-    const element = typeof window !== 'undefined' ? document.getElementById(elementId) : null;
-    if (!element) return;
-
-    element.style.display = element.style.display === 'none' ? 'block' : 'none';
 }
