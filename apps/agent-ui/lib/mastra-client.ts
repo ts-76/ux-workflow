@@ -3,7 +3,7 @@ import { MastraClient } from "@mastra/client-js";
 // Mastraクライアントのシングルトンインスタンスを作成
 // APIサーバーのURLを設定（ドキュメント通りに末尾スラッシュ付き）
 export const mastraClient = new MastraClient({
-    baseUrl: process.env.MASTRA_API_URL || "http://localhost:4111/",
+    baseUrl: process.env.MASTRA_API_URL || "http://localhost:4112/",
 });
 
 // エージェントへのアクセスヘルパー関数

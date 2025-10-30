@@ -31,6 +31,9 @@ export const mastra = new Mastra({
     name: "Mastra",
     level: "info",
   }),
+  bundler: {
+    externals: ["playwright-core"],
+  },
   // telemetry: {
   //   serviceName: "ai", // this must be set to "ai" so that the LangfuseExporter thinks it's an AI SDK trace
   //   enabled: true,

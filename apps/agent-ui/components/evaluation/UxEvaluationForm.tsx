@@ -2,8 +2,8 @@
 
 import { useState, FormEvent, useEffect, useRef } from 'react';
 import axios from 'axios';
-import WorkflowMonitor from './WorkflowMonitor';
-import { useWorkflowState } from './WorkflowStateProvider';
+import WorkflowMonitor from '@/components/workflow/WorkflowMonitor';
+import { useWorkflowState } from '@/components/WorkflowStateProvider';
 
 type UxEvaluationInput = {
     targetUrl: string;

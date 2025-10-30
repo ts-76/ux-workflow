@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
 
         // ワークフロー実行インスタンスを作成（runIdは自動生成される）
         console.log('🔧 ワークフロー実行インスタンスを作成中...');
-        const run = await workflow.createRun();
+        const run = await workflow.createRunAsync();
         console.log(`✅ ワークフロー実行インスタンス作成完了 - runId: ${run.runId}`);
 
         // Mastra Client JSのwatch方式でワークフロー監視を設定
